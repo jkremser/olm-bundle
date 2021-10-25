@@ -4,3 +4,7 @@
 .cache/
 vendor
 _output
+
+# goreleaser
+/dist/
+

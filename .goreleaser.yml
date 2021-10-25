@@ -8,6 +8,7 @@ builds:
     binary: olm-bundle
     goos:
       - linux
+      - darwin
     goarch:
       - amd64
       - arm64

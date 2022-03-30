@@ -15,6 +15,7 @@ import (
 
 // Bundle represents the final state that will be written to disk.
 type Bundle struct {
+	IncludeSA  bool
 	PackageDir string
 	Manifests  []client.Object
 	Metadata   Metadata
@@ -76,7 +77,11 @@ func (b *Bundle) writeManifests(dir string) error {
 	for _, m := range b.Manifests {
 		// Kind is made lower-case to pass integration tests in OLM repositories,
 		// it is not a requirement for other tools in OLM ecosystem.
-		name := fmt.Sprintf("%s.%s.yaml", cleanName(m.GetName()), strings.ToLower(m.GetObjectKind().GroupVersionKind().Kind))
+		kind := m.GetObjectKind().GroupVersionKind().Kind
+		if !b.IncludeSA && kind == "ServiceAccount" {
+			continue
+		}
+		name := fmt.Sprintf("%s.%s.yaml", cleanName(m.GetName()), strings.ToLower(kind))
 		o, err := yaml.Marshal(m)
 		if err != nil {
 			return errors.Wrap(err, "cannot marshal object into YAML")

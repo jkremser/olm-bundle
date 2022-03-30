@@ -25,6 +25,7 @@ type olmBundleCLI struct {
 	Version            string `help:"Version of the generated bundle. If not provided, value from Chart.yaml will be used"`
 	ReplacesVersion    string `help:"Version of the operator that this new bundle should replace. This should be empty for the fist release (~CSV.spec.replaces)"`
 	HelmChartOverrides bool   `help:"If set, metadata read from Chart.yaml will take precedence over those taken from the directory scan (in case of conflict)"`
+	IncludeSA          bool   `help:"If set, manifests with service account definitions will be included in the bundle"`
 }
 
 func main() {
@@ -93,6 +94,7 @@ func main() {
 	}
 	out[len(out)-1] = resultCSV
 	b := &writer.Bundle{
+		IncludeSA:  cli.IncludeSA,
 		PackageDir: cli.OutputDir,
 		Manifests:  out,
 		Metadata: writer.Metadata{
